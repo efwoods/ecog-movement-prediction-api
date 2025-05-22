@@ -1,0 +1,8 @@
+prometheus_client
+prometheus_fastapi_instrumentator
+torch
+fastapi
+uvicorn
+numpy
+tensorboard
+starlette

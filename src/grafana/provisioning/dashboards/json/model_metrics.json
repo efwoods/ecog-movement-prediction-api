@@ -1,0 +1,74 @@
+{
+  "id": null,
+  "title": "Model Metrics Dashboard",
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Prediction Latency (seconds)",
+      "targets": [
+        {
+          "expr": "prediction_latency_seconds",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Total Predictions",
+      "targets": [
+        {
+          "expr": "sum(prediction_requests_total)",
+          "legendFormat": "",
+          "refId": "C"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 6,
+        "h": 4
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Uptime (Seconds)",
+      "targets": [
+        {
+          "expr": "time() - process_start_time_seconds",
+          "refId": "D"
+        }
+      ],
+      "gridPos": {
+        "x": 6,
+        "y": 8,
+        "w": 6,
+        "h": 4
+      }
+    }
+  ],
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "5s",
+  "uid": "model-metrics",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "type": "dashboard",
+        "name": "Annotations & Alerts",
+        "enable": true
+      }
+    ]
+  }
+}

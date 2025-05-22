@@ -1,0 +1,70 @@
+# docker-compose.yml
+version: "3.9"
+
+services:
+  nn_api:
+    build: .
+    container_name: nn_api_container
+    ports:
+      - "8000:8000" # FastAPI API
+    volumes:
+      - ./src:/app/src
+      - ./requirements.txt:/app/requirements.txt:ro
+      - ./runs:/app/runs
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_container
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_container
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secure123
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/model_metrics.json
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  tensorboard:
+    image: tensorflow/tensorflow:latest
+    container_name: tensorboard_container
+    ports:
+      - "6006:6006"
+    volumes:
+      - ./runs:/app/runs
+    command: bash -c "tensorboard --logdir=/app/runs --host=0.0.0.0"
+
+volumes:
+  grafana-storage:
