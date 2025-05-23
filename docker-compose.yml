@@ -1,6 +1,4 @@
 # docker-compose.yml
-version: "3.9"
-
 services:
   nn_api:
     build: .
@@ -10,13 +8,14 @@ services:
     volumes:
       - ./src:/app/src
       - ./requirements.txt:/app/requirements.txt:ro
-      - ./runs:/app/runs
+      - ./src/runs:/app/src/runs
+      - ./src/models:/app/src/models
     environment:
       - PYTHONUNBUFFERED=1
     depends_on:
       - prometheus
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -25,7 +24,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus_container
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./src/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
       - "9090:9090"
     command:
@@ -43,8 +42,8 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./src/grafana/provisioning:/etc/grafana/provisioning
+      - ./src/grafana/provisioning/dashboards/json:/var/lib/grafana/dashboards
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=secure123
@@ -63,8 +62,8 @@ services:
     ports:
       - "6006:6006"
     volumes:
-      - ./runs:/app/runs
-    command: bash -c "tensorboard --logdir=/app/runs --host=0.0.0.0"
+      - ./src/runs:/app/src/runs
+    command: bash -c "tensorboard --logdir=/app/src/runs --host=0.0.0.0"
 
 volumes:
   grafana-storage:

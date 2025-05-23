@@ -28,7 +28,7 @@ from models.hybrid_cnn_lstm import EcogToMotionNet
 
 
 # Quantize model for lower latency
-model_name = "models/Hybrid_best_model_session_8_ipsilateral_2018_05_10_v2_6_outputs.pth"
+model_name = "./src/models/Hybrid_CNN_LSTM_ipsilateral_3_output.pth"
 model = EcogToMotionNet()
 model.load_state_dict(torch.load(model_name))
 
@@ -73,7 +73,7 @@ Instrumentator().instrument(app).expose(app)
 async def root():
     return "<h1>API running. Metrics available at <a href='/metrics'>/metrics</a></h1>"
 
-@app.get("/health")
+@app.get("/healthz")
 def health_check():
     return {"status": "ok"}
 

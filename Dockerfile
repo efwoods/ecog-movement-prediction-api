@@ -17,4 +17,4 @@ COPY src ./src
 EXPOSE 8000
 
 # Set default command to run your API (adjust entry point as needed)
-CMD ["python", "src/nn_api_template.py"]
+CMD ["python", "src/main.py"]

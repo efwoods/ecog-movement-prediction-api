@@ -1,8 +1,9 @@
 prometheus_client
-prometheus_fastapi_instrumentator
-torch
 fastapi
 uvicorn
+torch
+torchvision
 numpy
+prometheus_fastapi_instrumentator
 tensorboard
 starlette
